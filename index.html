@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="main-page" class="row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none">
+            <div class="col-12 mt-3">
+                <h1>詩篇經文遊戲</h1>
+            </div>
+            <div class="col-12">
+                <p class="display-5">
+                    本遊戲為了鼓勵弟兄姊妹多多讀經，培養對詩篇的熟悉程度。
+                </p>
+            </div>
+            <div class="col-12">
+                <h2>遊戲說明</h2>
+            </div>
+            <div class="col-12">
+                <p>每次出題會出現經文的前半段，必須從題目下方的四個選項中，選出正確答案。</p>
+                <hr>
+            </div>
+            <div class="col-12">
+                <h4>範例-詩篇1:1</h4>
+            </div>
+            <div class="row mt-2 mr-1 ml-1">
+                <div class="col-12">
+                    <h5>題目</h5>
+                </div>
+                <div class="col-12">
+                    <div class="question">
+                        <p>不 從 惡 人 的 計 謀</p>
+                        <h6 class="verse-view">1:1</h6>
+                    </div>                    
+                </div>
+                <div class="col-12">
+                    <h5>選項</h5>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p>惡 人 被 自 己 手 所 做 的 纏 住 了 （ 或 譯 ： 他 叫 惡 人 被 自 己 手 所 做 的 累 住 了 ） 。 （ 細 拉 ）</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p>不 站 罪 人 的 道 路 ， 不 坐 褻 慢 人 的 座 位</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p>耶 和 華 曾 對 我 說 ： 你 是 我 的 兒 子 ， 我 今 日 生 你 。</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p>是 我 的 榮 耀 ， 又 是 叫 我 抬 起 頭 來 的 。</p>
+                    </div>
+                    <hr>
+                </div>
+                <div class="col-12 mb-3"><button id="new-game" class="set">新遊戲</button></div>
+            </div>            
+        </div>
+        <div id="selection-page" class="row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center">
+            <div class="col-12 mt-3">
+                <h2>準備測驗</h2>
+                <p>請設定開始篇章與結束篇章，並設定一次測驗的題數，從開始到結束的詩篇範圍選出對應題數的測驗，建議最少練習5題。</p>
+                <hr>
+            </div>
+            <div class="col-12">
+                <label>起始詩篇章節 : 第</label>
+                <select name="start" id="start-chapter"></select>
+                </select>
+                <label>章</label>
+            </div>
+            <div class="col-12">
+                <label>結束詩篇章節 : 第</label>
+                <select name="end" id="end-chapter"></select>
+                <label>章</label>
+            </div>
+            <div class="col-12">
+                <label>題目數量 : </label>
+                <input type="text" name="number" id="question-number" placeholder="請輸入數字">
+            </div>
+            <div class="col-12">
+                <div class="col-12 mb-3"><button id="test-start" class="set">開始測驗</button></div>
+            </div>
+        </div>
+        <div id="test-page" class="row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none">
+            <div class="row mt-2 mr-1 ml-1">
+                <div class="col-12">
+                    <h5>題目</h5>
+                </div>
+                <div class="col-12">
+                    <div class="question">
+                        <p></p>
+                        <h6 class="verse-view"></h6>
+                    </div>                    
+                </div>
+                <div class="col-12">
+                    <h5>選項</h5>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="answer">
+                        <p></p>
+                    </div>
+                </div>
+            </div>     
+        </div>
+    </div>
+    <script src="question.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

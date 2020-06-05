@@ -1,0 +1,65 @@
+html{
+    font-size: 20px;
+}
+body {
+    background-color: #1F2F3C;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+p {
+    max-height: 8rem;
+    min-height: 4rem;
+    font-size: 1.2rem;
+    margin: 0;
+}
+h5 {
+    margin-bottom: 0;
+}
+hr {
+    background-color: #EEEAE5;
+}
+button{
+    outline: none;
+    border: none;
+}
+select, input{
+    background-color: #1F2F3C;
+    color: #EEEAE5;
+    border: none;
+}
+.container{
+    color: #EEEAE5;
+}
+.main-view{
+    background-color: #5C7894;
+    border-radius: 0.5rem;
+}
+.question{
+    display: flex;
+    flex-direction: column;
+    background-color: #3D5167;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    margin: 0.5rem 0;
+}
+.verse-view{
+    margin: 0;
+    justify-self: end;
+    align-self: flex-end;
+    max-height: 2rem;
+}
+.answer{
+    display: flex;
+    flex-direction: column;
+    background-color: #7C9AAF;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    margin: 0.5rem 0;
+}
+.set{
+    width: inherit;
+    background-color: #1F2F3C;
+    color: #EEEAE5;
+    height: 3rem;
+    border-radius: 0.5rem;
+}
