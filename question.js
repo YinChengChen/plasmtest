@@ -1,6 +1,12 @@
-var dataurl = "http://localhost:3000/data";
-loadData(dataurl).then(function (response) {
-    var data = JSON.parse(response);
+var dataurl = "https://jsonbin.org/yinchengchen/plasm";
+fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
+    headers: {
+        "secret-key": '$2b$10$Zk61rj6afq40ft7wTAfRj.Xagrp3DKcML/QNyEHurtvhxFSeXRp4S',
+    }
+}).then(res => res.json()).then(res => {
+
+    //console.log(res);
+    var data = res.data;
     /* initialize */
     // set chapter range
     var chapterList = new Set();
@@ -29,19 +35,39 @@ loadData(dataurl).then(function (response) {
     var testButton = document.getElementById("test-start");
     testButton.addEventListener("click", event => {
         console.log("start ", startOption.value, "end ", endOption.value, numberInput.value);
+        var selectionpage = document.getElementById("selection-page");
+        selectionpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none");
+        var testpage = document.getElementById("test-page");
+        testpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center");
         setTestList(data, parseInt(startOption.value), parseInt(endOption.value), parseInt(numberInput.value));
     });
 });
-
 
 // get Random list
 function setTestList(data, startChapter, endChapter, number) {
     var selectionList = data.filter((element) => {
         return element.chapter >= startChapter && element.chapter <= endChapter;
     });
-    var numberList = Object.values(selectionList).map(item => item.number);    
+    //console.log(selectionList);
+    var numberList = Object.values(selectionList).map(item => item.number);
     // get Random number
-    var randomList = getArrayItems(numberList, 4);    
+    var randomList = getArrayItems(numberList, 4);
+    //console.log('Random: ', randomList, typeof(randomList));
+    var questionList = Object.values(selectionList).filter(function (item, index, array) {
+        //console.log(item, index);
+        //console.log(randomList.indexOf(item.number));
+        if (randomList.indexOf(item.number) >= 0) {
+            return item;
+        }
+    });
+    //console.log(questionList);
+    var orderList = [1, 2, 3, 4];
+    var order = getArrayItems(orderList, 1);
+    //console.log(order);
+    // Create test view
+    displayTest(order, questionList);
+
+
 }
 // Get the chapter list
 function setChapterList(data) {
@@ -84,22 +110,53 @@ function getArrayItems(arr, num) {
     }
     return return_array;
 }
-// Not sure why this function is complex?
-function loadData(url) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("get", url);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                resolve(xhr.response);
-            } else {
-                reject(console.error("The data didn't load successfully."));
+function setCountTimer() {
+    // set TIMER
+    var start = true;     // flags that you want the countdown to start
+    var stopIn = 10000;    // how long the timer should run
+    var stopTime = 0;     // used to hold the stop time
+    var stop = false;     // flag to indicate that stop time has been reached
+    var timeTillStop = 0; // holds the display time
+    function update(timer) {
+        var ptext = document.getElementById("timer");
+        if (start) {  // do we need to start the timer
+            stopTime = timer + stopIn; // yes the set the stoptime
+            start = false;             // clear the start flag
+        } else {                         // waiting for stop
+            if (timer >= stopTime) {     // has stop time been reached?
+                stop = true;           // yes the flag to stop
             }
-        };
-        xhr.onerror = function () {
-            // xhr fails to begin with
-            reject(console.error('There was a network error.'));
-        };
-        xhr.send();
+        }
+        timeTillStop = stopTime - timer;      // for display of time till stop
+        // log() should be whatever you use to display the time.
+        console.log(Math.floor(timeTillStop / 1000));  // to display in 1/100th seconds
+        ptext.textContent = Math.floor(timeTillStop / 1000) + 1;
+        //element.style.transform = 'translateX(' + Math.min(timeTillStop / 1000, 10) + 'px)';
+        if (!stop) {
+            requestAnimationFrame(update); // continue animation until stop
+        }
+    }
+
+    requestAnimationFrame(update);  // start the animation
+}
+
+function displayTest(order, data) {
+    console.log("type:", order);
+    order = order - 1;
+    // Set question
+    var questionView = document.getElementById("question-title");
+    var verseView = document.querySelectorAll(".verse-view");
+    questionView.textContent = data[order].question;
+    verseView[1].textContent = data[order].chapter + ":" + data[order].verse;
+    // Set answer
+    var answerViews = document.querySelectorAll(".answer-option");
+    console.log("lsit: ", answerViews);
+    answerViews.forEach(function (item, index) {
+        if (index === order) {
+            item.textContent = data[order].answer;
+        } else {
+            item.textContent = data[index].answer;
+        }
     });
+    setCountTimer();
 }

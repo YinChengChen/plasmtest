@@ -39,7 +39,7 @@
                     <div class="question">
                         <p>不 從 惡 人 的 計 謀</p>
                         <h6 class="verse-view">1:1</h6>
-                    </div>                    
+                    </div>
                 </div>
                 <div class="col-12">
                     <h5>選項</h5>
@@ -66,7 +66,7 @@
                     <hr>
                 </div>
                 <div class="col-12 mb-3"><button id="new-game" class="set">新遊戲</button></div>
-            </div>            
+            </div>
         </div>
         <div id="selection-page" class="row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center">
             <div class="col-12 mt-3">
@@ -90,7 +90,7 @@
                 <input type="text" name="number" id="question-number" placeholder="請輸入數字">
             </div>
             <div class="col-12">
-                <div class="col-12 mb-3"><button id="test-start" class="set">開始測驗</button></div>
+                <div class="col-12 mt-3 mb-3"><button id="test-start" class="set">開始測驗</button></div>
             </div>
         </div>
         <div id="test-page" class="row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none">
@@ -100,34 +100,38 @@
                 </div>
                 <div class="col-12">
                     <div class="question">
-                        <p></p>
+                        <p id="question-title"></p>
                         <h6 class="verse-view"></h6>
-                    </div>                    
+                    </div>
                 </div>
                 <div class="col-12">
-                    <h5>選項</h5>
+                    <div class="row d-flex align-item-end">
+                        <div class="col-6 align-self-end">選項</div>
+                        <div class="col-4"><h3 id="timer">10</h3></div>
+                        <div class="col-2 justify-content-end align-self-end">秒</div>
+                    </div>
                 </div>
                 <div class="col-12">
-                    <div class="answer">
+                    <div class="answer-option">
                         <p></p>
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="answer">
+                    <div class="answer-option">
                         <p></p>
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="answer">
+                    <div class="answer-option">
                         <p></p>
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="answer">
+                    <div class="answer-option">
                         <p></p>
                     </div>
                 </div>
-            </div>     
+            </div>
         </div>
     </div>
     <script src="question.js"></script>
