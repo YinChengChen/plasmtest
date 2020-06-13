@@ -11,7 +11,7 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     // set chapter range
     var chapterList = new Set();
     var repeatList = new Set();
-    data.forEach(element => {
+    data.forEach(function(element) {
         chapterList.has(element.chapter) ? repeatList.add(element.chapter) : chapterList.add(element.chapter);
     });
     // create option
@@ -22,6 +22,8 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     var newGameButton = document.getElementById("new-game");
     newGameButton.addEventListener("click", event => {
         console.log("event", event);
+        // clear all session storage
+        sessionStorage.clear();
         // close main page and set selection page
         var mainpage = document.getElementById("main-page");
         mainpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none");
@@ -33,41 +35,59 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     var endOption = document.getElementById("end-chapter");
     var numberInput = document.getElementById("question-number");
     var testButton = document.getElementById("test-start");
-    testButton.addEventListener("click", event => {
+
+    testButton.addEventListener("click", function(){
         console.log("start ", startOption.value, "end ", endOption.value, numberInput.value);
+        var scoreObject = {
+            "number": numberInput.value,
+            "correctNum": 0,
+            "wrongNum": 0,
+        };
+        updateSessionStorage(scoreObject, "score");
         var selectionpage = document.getElementById("selection-page");
         selectionpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none");
         var testpage = document.getElementById("test-page");
         testpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center");
-        setTestList(data, parseInt(startOption.value), parseInt(endOption.value), parseInt(numberInput.value));
+         setTestList(data, parseInt(startOption.value), parseInt(endOption.value));
+
+    });
+    var nextButton = document.getElementById("next");
+    nextButton.addEventListener("click", function(){
+        console.log("next one");
+        var resultWrong = document.getElementById("wrong");
+        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");
+        var resultCorrect = document.getElementById("correct");
+        resultCorrect.setAttribute("class", "row mr-1 ml-1 d-none");
+        var buttonViews = document.querySelectorAll(".answer-option");
+        buttonViews.forEach(function(item){
+            item.removeAttribute("disabled");
+        });
+        setTestList(data, parseInt(startOption.value), parseInt(endOption.value));
+    });
+    var finalButton = document.getElementById("final");
+    finalButton.addEventListener("click", function(){
+        console.log("final Result");
     });
 });
 
 // get Random list
-function setTestList(data, startChapter, endChapter, number) {
-    var selectionList = data.filter((element) => {
+function setTestList(data, startChapter, endChapter) {
+
+    var selectionList = data.filter(function(element){
         return element.chapter >= startChapter && element.chapter <= endChapter;
     });
-    //console.log(selectionList);
     var numberList = Object.values(selectionList).map(item => item.number);
     // get Random number
     var randomList = getArrayItems(numberList, 4);
-    //console.log('Random: ', randomList, typeof(randomList));
-    var questionList = Object.values(selectionList).filter(function (item, index, array) {
-        //console.log(item, index);
-        //console.log(randomList.indexOf(item.number));
+    var questionList = Object.values(selectionList).filter(function (item) {
         if (randomList.indexOf(item.number) >= 0) {
             return item;
         }
     });
-    //console.log(questionList);
     var orderList = [1, 2, 3, 4];
     var order = getArrayItems(orderList, 1);
-    //console.log(order);
     // Create test view
     displayTest(order, questionList);
-
-
 }
 // Get the chapter list
 function setChapterList(data) {
@@ -129,11 +149,14 @@ function setCountTimer() {
         }
         timeTillStop = stopTime - timer;      // for display of time till stop
         // log() should be whatever you use to display the time.
-        console.log(Math.floor(timeTillStop / 1000));  // to display in 1/100th seconds
+        //console.log(Math.floor(timeTillStop / 1000));  // to display in 1/100th seconds
         ptext.textContent = Math.floor(timeTillStop / 1000) + 1;
+
         //element.style.transform = 'translateX(' + Math.min(timeTillStop / 1000, 10) + 'px)';
         if (!stop) {
             requestAnimationFrame(update); // continue animation until stop
+        }else{
+            showAnswerResult();
         }
     }
 
@@ -144,9 +167,27 @@ function displayTest(order, data) {
     console.log("type:", order);
     order = order - 1;
     // Set question
+    // check the number of question
+    var score = loadSessionStorage("score");
+    console.log("Show quesition number : ", score.number);
+    var nextButton = document.getElementById("next");
+    var finalButton = document.getElementById("final");
+    if(parseInt(score.number) === 1){
+        nextButton.setAttribute("class", "set d-none");
+        finalButton.setAttribute("class", "set");
+        finalButton.setAttribute("disabled", true);
+    }else{
+        nextButton.setAttribute("disabled", true);
+    }
     var questionView = document.getElementById("question-title");
     var verseView = document.querySelectorAll(".verse-view");
     questionView.textContent = data[order].question;
+    var answerOject = {
+        "chapter": data[order].chapter,
+        "verse": data[order].verse,
+        "correct": data[order].answer,
+    };
+    updateSessionStorage(answerOject, "answer");
     verseView[1].textContent = data[order].chapter + ":" + data[order].verse;
     // Set answer
     var answerViews = document.querySelectorAll(".answer-option");
@@ -154,9 +195,146 @@ function displayTest(order, data) {
     answerViews.forEach(function (item, index) {
         if (index === order) {
             item.textContent = data[order].answer;
+            item.setAttribute("data-ch", data[order].chapter);
+            item.setAttribute("data-vr", data[order].verse);
         } else {
             item.textContent = data[index].answer;
+            item.setAttribute("data-ch", data[index].chapter);
+            item.setAttribute("data-vr", data[index].verse);
         }
     });
     setCountTimer();
+    checkAnswer();
 }
+
+function updateLocalStorage(dataObject, localStorageName) {
+    var updateOject = JSON.stringify(dataObject);
+    localStorage.setItem(localStorageName, updateOject);
+}
+function loadLocalStorage(localStorageName){
+    var loadItem = localStorage.getItem(localStorageName);
+    return JSON.parse(loadItem);
+}
+function updateSessionStorage(dataObject, sessionStorageName) {
+    var updateOject = JSON.stringify(dataObject);
+    sessionStorage.setItem(sessionStorageName, updateOject);
+}
+function loadSessionStorage(sessionStorageName) {
+    var loadItem = sessionStorage.getItem(sessionStorageName);
+    return JSON.parse(loadItem);
+}
+
+function checkAnswer(){
+    var answerCheck = loadSessionStorage("answer");
+    var questionTitle = document.getElementById("question-title");
+    var verseTitle = document.getElementById("verse-title");
+    var fatherNode = document.getElementById("test-page");
+    var checkObject = {
+        "check": false,
+        "verse": verseTitle.textContent,
+        "question": questionTitle.textContent,
+        "correct": answerCheck.correct,
+        "answer": "未作答",
+    };
+    updateSessionStorage(checkObject, "check");
+    fatherNode.addEventListener("click", function(e){
+        if(e.target.nodeName !== "BUTTON" || e.target.id === "next" || e.target.id === "final"){
+            return;
+        }else{
+            //console.log(e.target.dataset.ch, typeof (e.target.dataset.ch), e.target.dataset.vr, typeof (e.target.dataset.vr));
+            //console.log(answerCheck);
+            if(answerCheck.chapter === parseInt(e.target.dataset.ch) && answerCheck.verse === parseInt(e.target.dataset.vr)){
+                console.log("correct!");
+                checkObject = {
+                    "check": true,
+                    "verse": verseTitle.textContent,
+                    "question": questionTitle.textContent,
+                    "correct": answerCheck.correct,
+                    "answer": e.target.textContent,
+                };
+            }else{
+                console.log("wrong!!!");
+                checkObject = {
+                    "check": false,
+                    "verse": verseTitle.textContent,
+                    "question": questionTitle.textContent,
+                    "correct": answerCheck.correct,
+                    "answer": e.target.textContent,
+                };
+                // record all wrong verse
+            }
+            updateSessionStorage(checkObject, "check");
+        }
+    }, false);
+}
+function showAnswerResult(){
+    //console.log("End time");
+    var answer = loadSessionStorage("check");
+    var score = loadSessionStorage("score");
+    score.number = score.number - 1;
+    var nextButton = document.getElementById("next");
+    nextButton.removeAttribute("disabled");
+    var finalButton = document.getElementById("final");
+    finalButton.removeAttribute("disabled");
+    var buttonViews = document.querySelectorAll(".answer-option");
+    buttonViews.forEach(function(item){
+        item.setAttribute("disabled", true);
+    });
+    var resultView;
+    // Show result
+    if(answer.check === true){
+        resultView = document.getElementById("correct");
+        clearNode(resultView);
+        resultView.setAttribute("class", "row mr-1 ml-1");
+        var innerHtmlOfCorrect = '<div class="col-12 pt-1 pb-1 resultcorrect">正確 ' +
+        answer.verse + '<hr>' + answer.question + answer.correct +
+        '</div></div>';
+        resultView.innerHTML = innerHtmlOfCorrect;
+        score.correctNum = score.correctNum + 1;
+        updateSessionStorage(score, "score");
+    }else{
+        resultView = document.getElementById("wrong");
+        clearNode(resultView);
+        resultView.setAttribute("class", "row mr-1 ml-1");
+        var innerHtmlOfWrong = '<div class="col-12 pt-1 pb-1 resultcorrect">正確 ' +
+            answer.verse + '<hr>' + answer.question + answer.correct +
+            '</div><div class="col-12 mt-3 mb-3 pt-1 pb-1 resultwrong">錯誤<hr>' + answer.answer +
+            '</div></div>';
+        resultView.innerHTML = innerHtmlOfWrong;
+        score.wrongNum = score.wrongNum + 1;
+        updateSessionStorage(score,"score");
+        recordWrongAnswer(answer);
+    }
+}
+
+function showScoreResult(){
+
+}
+
+function recordWrongAnswer(dataObject){
+    var recordList = loadSessionStorage("record-wrong") || [];
+    if(recordList){
+        var tmp = {
+            "verse": dataObject.verse,
+            "question": dataObject.question,
+            "correct": dataObject.correct,
+            "answer": dataObject.answer,
+        };
+        recordList.push(tmp);
+    }else{
+        recordList = [{
+            "verse": dataObject.verse,
+            "question": dataObject.question,
+            "correct" : dataObject.correct,
+            "answer" : dataObject.answer,
+        }];
+    }
+    updateSessionStorage(recordList, "record-wrong");
+}
+
+function clearNode(fatherNode){
+    while (fatherNode.firstChild) {
+        fatherNode.removeChild(fatherNode.firstChild);
+    }
+}
+
