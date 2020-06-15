@@ -43,6 +43,7 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
                 "number": numberInput.value,
                 "correctNum": 0,
                 "wrongNum": 0,
+                "order": 1,
             };
             updateSessionStorage(scoreObject, "score");
             var selectionpage = document.getElementById("selection-page");
@@ -182,6 +183,7 @@ function displayTest(order, data) {
     // check the number of question
     var score = loadSessionStorage("score");
     console.log("Show quesition number : ", score.number);
+    
     var nextButton = document.getElementById("next");
     var finalButton = document.getElementById("final");
     if (parseInt(score.number) === 1) {
@@ -193,6 +195,7 @@ function displayTest(order, data) {
         nextButton.setAttribute("class", "set");
         nextButton.setAttribute("disabled", true);
     }
+    document.getElementById("question-order").textContent = "題目 " + String(score.order);
     var questionView = document.getElementById("question-title");
     var verseView = document.querySelectorAll(".verse-view");
     questionView.textContent = data[order].question;
@@ -286,6 +289,7 @@ function showAnswerResult() {
     var answer = loadSessionStorage("check");
     var score = loadSessionStorage("score");
     score.number = score.number - 1;
+    score.order = score.order + 1;
     var nextButton = document.getElementById("next");
     nextButton.removeAttribute("disabled");
     var finalButton = document.getElementById("final");
