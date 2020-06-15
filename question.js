@@ -5,75 +5,87 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     }
 }).then(res => res.json()).then(res => {
 
-    //console.log(res);
     var data = res.data;
     /* initialize */
     // set chapter range
     var chapterList = new Set();
     var repeatList = new Set();
-    data.forEach(function(element) {
+    data.forEach(function (element) {
         chapterList.has(element.chapter) ? repeatList.add(element.chapter) : chapterList.add(element.chapter);
     });
     // create option
     setChapterList(chapterList);
-
     /*Event*/
     // go to selection page
     var newGameButton = document.getElementById("new-game");
     newGameButton.addEventListener("click", event => {
-        console.log("event", event);
+        //console.log("event", event);
         // clear all session storage
-        sessionStorage.clear();
         // close main page and set selection page
-        var mainpage = document.getElementById("main-page");
-        mainpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none");
-        var selectionpage = document.getElementById("selection-page");
-        selectionpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center");
+        document.getElementById("main-page").setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none");
+        document.getElementById("selection-page").setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center");
+        sessionStorage.clear();
     }, false);
     // go to the test page
     var startOption = document.getElementById("start-chapter");
     var endOption = document.getElementById("end-chapter");
     var numberInput = document.getElementById("question-number");
     var testButton = document.getElementById("test-start");
-
-    testButton.addEventListener("click", function(){
+    var resultWrong = document.getElementById("wrong");
+    var resultCorrect = document.getElementById("correct");
+    testButton.addEventListener("click", function () {
         console.log("start ", startOption.value, "end ", endOption.value, numberInput.value);
-        var scoreObject = {
-            "number": numberInput.value,
-            "correctNum": 0,
-            "wrongNum": 0,
-        };
-        updateSessionStorage(scoreObject, "score");
-        var selectionpage = document.getElementById("selection-page");
-        selectionpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none");
-        var testpage = document.getElementById("test-page");
-        testpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center");
-         setTestList(data, parseInt(startOption.value), parseInt(endOption.value));
-
+        if(!numberInput.value){
+            alert("請填寫題數.");
+            return;
+        }else{
+            var scoreObject = {
+                "number": numberInput.value,
+                "correctNum": 0,
+                "wrongNum": 0,
+            };
+            updateSessionStorage(scoreObject, "score");
+            var selectionpage = document.getElementById("selection-page");
+            selectionpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center d-none");
+            var testpage = document.getElementById("test-page");
+            testpage.setAttribute("class", "row main-view mt-4 mr-1 ml-1 flex-column jusify-content-center");
+            setTestList(data, parseInt(startOption.value), parseInt(endOption.value));
+        }
     });
     var nextButton = document.getElementById("next");
-    nextButton.addEventListener("click", function(){
-        console.log("next one");
-        var resultWrong = document.getElementById("wrong");
-        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");
-        var resultCorrect = document.getElementById("correct");
+    nextButton.addEventListener("click", function () {
+        console.log("next one");        
+        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");        
         resultCorrect.setAttribute("class", "row mr-1 ml-1 d-none");
-        var buttonViews = document.querySelectorAll(".answer-option");
-        buttonViews.forEach(function(item){
+        document.querySelectorAll(".answer-option").forEach(function (item) {
             item.removeAttribute("disabled");
         });
         setTestList(data, parseInt(startOption.value), parseInt(endOption.value));
     });
     var finalButton = document.getElementById("final");
-    finalButton.addEventListener("click", function(){
+    finalButton.addEventListener("click", function () {
         console.log("final Result");
+        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");        
+        resultCorrect.setAttribute("class", "row mr-1 ml-1 d-none");
+        document.getElementById("test-page").setAttribute("class", "row main-view mt-4 mr-1 ml-1 d-none");
+        document.getElementById("score-page").setAttribute("class", "container");
+        document.querySelectorAll(".answer-option").forEach(function (item) {
+            item.removeAttribute("disabled");
+        });
+        showScoreResult();        
+    });
+    var restartButton = document.getElementById("restart");
+    restartButton.addEventListener("click", function(){
+        document.getElementById("score-page").setAttribute("class", "container d-none");
+        document.getElementById("main-page").setAttribute("class","row main-view mt-4 mr-1 ml-1");
+        sessionStorage.clear();
     });
 });
 
 // get Random list
 function setTestList(data, startChapter, endChapter) {
-
-    var selectionList = data.filter(function(element){
+    console.log(data);
+    var selectionList = data.filter(function (element) {
         return element.chapter >= startChapter && element.chapter <= endChapter;
     });
     var numberList = Object.values(selectionList).map(item => item.number);
@@ -155,7 +167,7 @@ function setCountTimer() {
         //element.style.transform = 'translateX(' + Math.min(timeTillStop / 1000, 10) + 'px)';
         if (!stop) {
             requestAnimationFrame(update); // continue animation until stop
-        }else{
+        } else {
             showAnswerResult();
         }
     }
@@ -172,11 +184,13 @@ function displayTest(order, data) {
     console.log("Show quesition number : ", score.number);
     var nextButton = document.getElementById("next");
     var finalButton = document.getElementById("final");
-    if(parseInt(score.number) === 1){
+    if (parseInt(score.number) === 1) {
         nextButton.setAttribute("class", "set d-none");
         finalButton.setAttribute("class", "set");
         finalButton.setAttribute("disabled", true);
-    }else{
+    } else {
+        finalButton.setAttribute("class", "set d-none");
+        nextButton.setAttribute("class", "set");
         nextButton.setAttribute("disabled", true);
     }
     var questionView = document.getElementById("question-title");
@@ -211,7 +225,7 @@ function updateLocalStorage(dataObject, localStorageName) {
     var updateOject = JSON.stringify(dataObject);
     localStorage.setItem(localStorageName, updateOject);
 }
-function loadLocalStorage(localStorageName){
+function loadLocalStorage(localStorageName) {
     var loadItem = localStorage.getItem(localStorageName);
     return JSON.parse(loadItem);
 }
@@ -224,7 +238,7 @@ function loadSessionStorage(sessionStorageName) {
     return JSON.parse(loadItem);
 }
 
-function checkAnswer(){
+function checkAnswer() {
     var answerCheck = loadSessionStorage("answer");
     var questionTitle = document.getElementById("question-title");
     var verseTitle = document.getElementById("verse-title");
@@ -237,13 +251,13 @@ function checkAnswer(){
         "answer": "未作答",
     };
     updateSessionStorage(checkObject, "check");
-    fatherNode.addEventListener("click", function(e){
-        if(e.target.nodeName !== "BUTTON" || e.target.id === "next" || e.target.id === "final"){
+    fatherNode.addEventListener("click", function (e) {
+        if (e.target.nodeName !== "BUTTON" || e.target.id === "next" || e.target.id === "final") {
             return;
-        }else{
+        } else {
             //console.log(e.target.dataset.ch, typeof (e.target.dataset.ch), e.target.dataset.vr, typeof (e.target.dataset.vr));
             //console.log(answerCheck);
-            if(answerCheck.chapter === parseInt(e.target.dataset.ch) && answerCheck.verse === parseInt(e.target.dataset.vr)){
+            if (answerCheck.chapter === parseInt(e.target.dataset.ch) && answerCheck.verse === parseInt(e.target.dataset.vr)) {
                 console.log("correct!");
                 checkObject = {
                     "check": true,
@@ -252,7 +266,7 @@ function checkAnswer(){
                     "correct": answerCheck.correct,
                     "answer": e.target.textContent,
                 };
-            }else{
+            } else {
                 console.log("wrong!!!");
                 checkObject = {
                     "check": false,
@@ -267,7 +281,7 @@ function checkAnswer(){
         }
     }, false);
 }
-function showAnswerResult(){
+function showAnswerResult() {
     //console.log("End time");
     var answer = loadSessionStorage("check");
     var score = loadSessionStorage("score");
@@ -277,22 +291,22 @@ function showAnswerResult(){
     var finalButton = document.getElementById("final");
     finalButton.removeAttribute("disabled");
     var buttonViews = document.querySelectorAll(".answer-option");
-    buttonViews.forEach(function(item){
+    buttonViews.forEach(function (item) {
         item.setAttribute("disabled", true);
     });
     var resultView;
     // Show result
-    if(answer.check === true){
+    if (answer.check === true) {
         resultView = document.getElementById("correct");
         clearNode(resultView);
         resultView.setAttribute("class", "row mr-1 ml-1");
         var innerHtmlOfCorrect = '<div class="col-12 pt-1 pb-1 resultcorrect">正確 ' +
-        answer.verse + '<hr>' + answer.question + answer.correct +
-        '</div></div>';
+            answer.verse + '<hr>' + answer.question + answer.correct +
+            '</div></div>';
         resultView.innerHTML = innerHtmlOfCorrect;
         score.correctNum = score.correctNum + 1;
         updateSessionStorage(score, "score");
-    }else{
+    } else {
         resultView = document.getElementById("wrong");
         clearNode(resultView);
         resultView.setAttribute("class", "row mr-1 ml-1");
@@ -302,18 +316,39 @@ function showAnswerResult(){
             '</div></div>';
         resultView.innerHTML = innerHtmlOfWrong;
         score.wrongNum = score.wrongNum + 1;
-        updateSessionStorage(score,"score");
+        updateSessionStorage(score, "score");
         recordWrongAnswer(answer);
     }
 }
 
-function showScoreResult(){
-
+function showScoreResult() {
+    var score = loadSessionStorage("score");
+    var record = loadSessionStorage("record-wrong");
+    document.getElementById("total").textContent = parseInt(score.correctNum) + parseInt(score.wrongNum);
+    document.getElementById("correct-num").textContent = score.correctNum;
+    document.getElementById("wrong-num").textContent = score.wrongNum;
+    var recordList = document.getElementById("record-list");
+    clearNode(recordList);
+    recordList.textContent = "答錯紀錄";
+    record.forEach(function (item) {
+        var verseRecord = document.createElement("DIV");
+        var correctRecord = document.createElement("DIV");
+        var wrongRecord = document.createElement("DIV");
+        verseRecord.setAttribute("class", "record");
+        correctRecord.setAttribute("class", "resultcorrect");
+        wrongRecord.setAttribute("class", "resultwrong");
+        verseRecord.textContent = item.verse;
+        correctRecord.textContent = item.question + item.correct;
+        wrongRecord.textContent = item.answer;
+        recordList.appendChild(verseRecord);
+        recordList.appendChild(correctRecord);
+        recordList.appendChild(wrongRecord);
+    });
 }
 
-function recordWrongAnswer(dataObject){
+function recordWrongAnswer(dataObject) {
     var recordList = loadSessionStorage("record-wrong") || [];
-    if(recordList){
+    if (recordList) {
         var tmp = {
             "verse": dataObject.verse,
             "question": dataObject.question,
@@ -321,18 +356,18 @@ function recordWrongAnswer(dataObject){
             "answer": dataObject.answer,
         };
         recordList.push(tmp);
-    }else{
+    } else {
         recordList = [{
             "verse": dataObject.verse,
             "question": dataObject.question,
-            "correct" : dataObject.correct,
-            "answer" : dataObject.answer,
+            "correct": dataObject.correct,
+            "answer": dataObject.answer,
         }];
     }
     updateSessionStorage(recordList, "record-wrong");
 }
 
-function clearNode(fatherNode){
+function clearNode(fatherNode) {
     while (fatherNode.firstChild) {
         fatherNode.removeChild(fatherNode.firstChild);
     }
