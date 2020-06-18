@@ -35,10 +35,10 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     var resultCorrect = document.getElementById("correct");
     testButton.addEventListener("click", function () {
         console.log("start ", startOption.value, "end ", endOption.value, numberInput.value);
-        if(!numberInput.value){
+        if (!numberInput.value) {
             alert("請填寫題數.");
             return;
-        }else{
+        } else {
             var scoreObject = {
                 "number": numberInput.value,
                 "correctNum": 0,
@@ -55,8 +55,8 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     });
     var nextButton = document.getElementById("next");
     nextButton.addEventListener("click", function () {
-        console.log("next one");        
-        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");        
+        console.log("next one");
+        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");
         resultCorrect.setAttribute("class", "row mr-1 ml-1 d-none");
         document.querySelectorAll(".answer-option").forEach(function (item) {
             item.removeAttribute("disabled");
@@ -66,19 +66,19 @@ fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     var finalButton = document.getElementById("final");
     finalButton.addEventListener("click", function () {
         console.log("final Result");
-        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");        
+        resultWrong.setAttribute("class", "row mr-1 ml-1 d-none");
         resultCorrect.setAttribute("class", "row mr-1 ml-1 d-none");
         document.getElementById("test-page").setAttribute("class", "row main-view mt-4 mr-1 ml-1 d-none");
         document.getElementById("score-page").setAttribute("class", "container");
         document.querySelectorAll(".answer-option").forEach(function (item) {
             item.removeAttribute("disabled");
         });
-        showScoreResult();        
+        showScoreResult();
     });
     var restartButton = document.getElementById("restart");
-    restartButton.addEventListener("click", function(){
+    restartButton.addEventListener("click", function () {
         document.getElementById("score-page").setAttribute("class", "container d-none");
-        document.getElementById("main-page").setAttribute("class","row main-view mt-4 mr-1 ml-1");
+        document.getElementById("main-page").setAttribute("class", "row main-view mt-4 mr-1 ml-1");
         sessionStorage.clear();
     });
 });
@@ -183,7 +183,7 @@ function displayTest(order, data) {
     // check the number of question
     var score = loadSessionStorage("score");
     console.log("Show quesition number : ", score.number);
-    
+
     var nextButton = document.getElementById("next");
     var finalButton = document.getElementById("final");
     if (parseInt(score.number) === 1) {
@@ -334,20 +334,23 @@ function showScoreResult() {
     var recordList = document.getElementById("record-list");
     clearNode(recordList);
     recordList.textContent = "答錯紀錄";
-    record.forEach(function (item) {
-        var verseRecord = document.createElement("DIV");
-        var correctRecord = document.createElement("DIV");
-        var wrongRecord = document.createElement("DIV");
-        verseRecord.setAttribute("class", "record");
-        correctRecord.setAttribute("class", "resultcorrect");
-        wrongRecord.setAttribute("class", "resultwrong");
-        verseRecord.textContent = item.verse;
-        correctRecord.textContent = item.question + item.correct;
-        wrongRecord.textContent = item.answer;
-        recordList.appendChild(verseRecord);
-        recordList.appendChild(correctRecord);
-        recordList.appendChild(wrongRecord);
-    });
+    if (record) {
+        record.forEach(function (item) {
+            var verseRecord = document.createElement("DIV");
+            var correctRecord = document.createElement("DIV");
+            var wrongRecord = document.createElement("DIV");
+            verseRecord.setAttribute("class", "record");
+            correctRecord.setAttribute("class", "resultcorrect");
+            wrongRecord.setAttribute("class", "resultwrong");
+            verseRecord.textContent = item.verse;
+            correctRecord.textContent = item.question + item.correct;
+            wrongRecord.textContent = item.answer;
+            recordList.appendChild(verseRecord);
+            recordList.appendChild(correctRecord);
+            recordList.appendChild(wrongRecord);
+        });
+    }
+
 }
 
 function recordWrongAnswer(dataObject) {

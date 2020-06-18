@@ -70,10 +70,10 @@
                 <div class="col-12 mb-3">
                     <p>題目作答結束會顯示正確答案，如果有做錯也會顯示錯誤經文，以上都沒問題，那你準備好了嗎?</p>
                 </div>
-                <div class="col-12 mb-3"><button id="new-game" class="set">準備好了</button></div>
+                <div class="col-12 mb-3"><button id="new-game" class="set" onclick="location.href='#'">準備好了</button></div>
             </div>
         </div>
-        <div id="selection-page" class="row main-view mt-4 mr-1 ml-1 d-none">
+        <div id="selection-page" class="row main-view mt-4 mr-1 ml-1 d-none"></a>
             <div class="col-12 mt-3">
                 <h2>準備測驗</h2>
                 <p>請設定開始篇章與結束篇章，並設定一次測驗的題數，從開始到結束的詩篇範圍選出對應題數的測驗，建議最少練習5題。</p>
@@ -95,10 +95,10 @@
                 <input type="text" name="number" id="question-number" placeholder="請輸入數字">
             </div>
             <div class="col-12">
-                <div class="col-12 mt-3 mb-3"><button id="test-start" class="set">開始測驗 GO</button></div>
+                <div class="col-12 mt-3 mb-3"><button id="test-start" class="set" onclick="location.href='#'">開始測驗 GO</button></div>
             </div>
         </div>
-        <div id="test-page" class="row main-view mt-4 mr-1 ml-1 d-none">
+        <div id="test-page" class="row main-view mt-4 mr-1 ml-1 d-none"><a href="#"></a>
             <div class="row mt-2 mr-1 ml-1">
                 <div class="col-12">
                     <h5 id="question-order">題目</h5>
@@ -134,12 +134,12 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="col-12 mt-3 mb-3"><button id="next" class="set" disabled="disabled">下一題</button><button
-                            id="final" class="set d-none" disabled="disabled">結束測驗</button></div>
+                    <div class="col-12 mt-3 mb-3"><button id="next" class="set" disabled="disabled" onclick="location.href='#'">下一題</button><button
+                            id="final" class="set d-none" disabled="disabled" onclick="location.href='#'">結束測驗</button></div>
                 </div>
             </div>
         </div>
-        <div class="container d-none" id="score-page">
+        <div class="container d-none" id="score-page"><a href="#"></a>
             <div class="row d-flex flex-column">
                 <div class="col-12 mt-3 mb-3">
                     <div class="row d-flex flex-nowrap justify-content-around">
@@ -165,16 +165,10 @@
                 </div>
                 <div class="col-12 mb-3">
                     <div class="box" id="record-list">答錯紀錄
-                        <!--<div class="record">1:1</div>
-                        <div class="resultcorrect">Lorem ipsum dolor sit amet.</div>
-                        <div class="resultwrong">Lorem ipsum dolor sit amet.</div>
-                        <div class="record">1:1</div>
-                        <div class="resultcorrect">Lorem ipsum dolor sit amet.</div>
-                        <div class="resultwrong">Lorem ipsum dolor sit amet.</div>-->
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="box"><button id="restart" class="set">回首頁</button></div>
+                    <div class="box"><button id="restart" class="set" onclick="location.href='#'">回首頁</button></div>
                 </div>
             </div>
         </div>
