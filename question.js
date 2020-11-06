@@ -1,4 +1,9 @@
 var dataurl = "https://jsonbin.org/yinchengchen/plasm";
+if ('addEventListener' in document) {
+	document.addEventListener('DOMContentLoaded', function() {
+		FastClick.attach(document.body);
+	}, false);
+}
 fetch('https://api.jsonbin.io/b/5ed9f78c655d87580c443b75', {
     headers: {
         "secret-key": '$2b$10$Zk61rj6afq40ft7wTAfRj.Xagrp3DKcML/QNyEHurtvhxFSeXRp4S',
