@@ -146,7 +146,7 @@ function getArrayItems(arr, num) {
 function setCountTimer() {
     // set TIMER
     var start = true;     // flags that you want the countdown to start
-    var stopIn = 10000;    // how long the timer should run
+    var stopIn = 20000;    // how long the timer should run
     var stopTime = 0;     // used to hold the stop time
     var stop = false;     // flag to indicate that stop time has been reached
     var timeTillStop = 0; // holds the display time
